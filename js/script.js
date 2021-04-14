@@ -51,13 +51,58 @@ const checkInput = function (input) {
         return input;
     }
 };
-
+//    show and update guessed letters
 const makeGuess = function (guess) {
     guess = guess.toUpperCase();
     if (guessedLetters.includes(guess)) {
-      message.innerText = "You already guessed that letter, silly. Try again.";
+      message.innerText = "You already guessed that letter. Try again.";
     } else {
       guessedLetters.push(guess);
-      console.log(guessedLetters);
+      showGuessedLetters();
+      updateWord(guessedLetters);
+      //console.log(guessedLetters);
     }
   };
+
+const showGuessedLetters = function () {
+    guessedLettersElement.innerHTML = "";
+    for (const letter of guessedLetters) {
+        const li = document.createElement("li");
+        li.innerHTML = letter;
+        guessedLettersElement.append(li);    
+    }
+};
+
+//    Update the Word in Progress
+const updateWord =  function (guessedLetters) {
+    const wordUpper = word.toUpperCase();
+    const wordArray = wordUpper.split("");
+    const revealWord = [];
+
+    for (const letter of wordArray) {
+        if (guessedLetters.includes(letter)) {
+            revealWord.push(letter.toUpperCase());
+        } else {
+            revealWord.push("●");
+        }
+    }
+    wordInProgress.innerText = revealWord.join("");
+    checkWon();
+};
+
+// check if the player won
+const checkWon = function () {
+    if (word.toUpperCase() === wordInProgress.innerText) {
+        message.classList.add("win");
+        message.innerHTML = `<p class="highlight">You guessed correct the word! Congrats!</p>`;
+        guessButton.classList.add("hide");
+        playAgainButton.classList.remove("hide");
+    }
+}
+
+playAgainButton.addEventListener("click", function(){
+    playAgainButton.classList.add("hide");
+    guessButton.classList.remove("hide");
+    message.innerText = "";
+    guessedLetters = [];
+});
