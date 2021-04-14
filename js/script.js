@@ -7,11 +7,26 @@ const spanRemainingGuesses = document.querySelector("span");
 const message = document.querySelector(".message");
 const playAgainButton = document.querySelector(".play-again");
 
-const word = "magnolia";
+let word = "magnolia";
 const guessedLetters = [];
-
 let remainingGuesses = 8;
 
+const getWord = async function (){
+    const getFile = await fetch (
+        "https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt"
+    );
+    const words = await getFile.text(0);
+    //console.log(text);
+    const wordArray = words.split("\n");
+    //console.log(wordArray);
+    const randomIndex = Math.floor(Math.random() * wordArray.length);
+    word = wordArray[randomIndex].trim();
+    placeholder(word);
+
+};
+
+getWord();
+ 
 //add dots for placeholders of letter
 const placeholder = function (word){
     const placeholderLetters = [];
@@ -21,7 +36,6 @@ const placeholder = function (word){
     }
     wordInProgress.innerText = placeholderLetters.join("");
 };
-placeholder(word);
 
 //click the Guess button
 guessButton.addEventListener("click", function(e) {
@@ -102,7 +116,7 @@ const updateGuessesRemaining = function(guess) {
     }
 
     if (remainingGuesses === 0) {
-        message.innerText = `Sorry, you have run out of guesses. The mystery word was "${word}. GAME OVER."`;
+        message.innerText = `Sorry, you have run out of guesses. The mystery word was "${word}." GAME OVER.`;
         // restart game function *ADD*
     } else if (remainingGuesses === 1) {
         spanRemainingGuesses.innerText = `${remainingGuesses} guess`;
